@@ -6,10 +6,13 @@ import React from 'react';
 import {Props} from "next/script";
 import Image from "next/image";
 import {usePathname} from "next/navigation";
-
+import Link from "next/link";
+import GlobalFooter from "@/components/GlobalFooter";
+import "./index.css"
+import {menus} from "../../../config/menu";
 
 const SearchInput = () => {
-    const { token } = theme.useToken();
+    const {token} = theme.useToken();
     return (
         <div
             key="SearchOutlined"
@@ -44,7 +47,7 @@ const SearchInput = () => {
     );
 };
 
-export default function  BasicLayout ({children}: Props): React.ReactElement  {
+export default function BasicLayout({children}: Props): React.ReactElement {
 
     const pathname = usePathname()
 
@@ -70,23 +73,11 @@ export default function  BasicLayout ({children}: Props): React.ReactElement  {
                     layout={'top'}
                     title={"面试刷题平台"}
                     logo={
-                        <Image src="/assets/logo.png" width={32} height={32} alt={"muxuetianyin-刷题网站"} />
+                        <Image src="/assets/logo.png" width={32} height={32} alt={"muxuetianyin-刷题网站"}/>
                     }
                     siderMenuType="group"
                     menu={{
                         collapsedShowGroupTitle: true,
-                    }}
-                    menuDataRender={()=>{
-                        return [
-                            {
-                                path:'questions',
-                                name:'题目'
-                            },
-                            {
-                                path:'Banks',
-                                name:'题库'
-                            }
-                        ]
                     }}
                     avatarProps={{
                         src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
@@ -99,7 +90,7 @@ export default function  BasicLayout ({children}: Props): React.ReactElement  {
                                         items: [
                                             {
                                                 key: 'logout',
-                                                icon: <LogoutOutlined />,
+                                                icon: <LogoutOutlined/>,
                                                 label: '退出登录',
                                             },
                                         ],
@@ -112,17 +103,17 @@ export default function  BasicLayout ({children}: Props): React.ReactElement  {
                     }}
                     actionsRender={(props) => {
                         if (props.isMobile) return [];
-                        if (typeof window === 'undefined') return [];
+                        // if (typeof window === 'undefined') return [];
                         return [
                             props.layout !== 'side' && document.body.clientWidth > 1400 ? (
-                                <SearchInput />
+                                <SearchInput/>
                             ) : undefined,
-                            <InfoCircleFilled key="InfoCircleFilled" />,
-                            <QuestionCircleFilled key="QuestionCircleFilled" />,
-                            <GithubFilled key="GithubFilled" />,
+                            <InfoCircleFilled key="InfoCircleFilled"/>,
+                            <QuestionCircleFilled key="QuestionCircleFilled"/>,
+                            <GithubFilled key="GithubFilled"/>,
                         ];
                     }}
-                    headerTitleRender={(logo, title, _) => {
+                    headerTitleRender={(logo, title) => {
                         const defaultDom = (
                             <a>
                                 {logo}
@@ -130,39 +121,32 @@ export default function  BasicLayout ({children}: Props): React.ReactElement  {
                             </a>
                         );
                         // if (typeof window === 'undefined') return defaultDom;
-                        if (document.body.clientWidth < 1400) {
-                            return defaultDom;
-                        }
-                        if (_.isMobile) return defaultDom;
+                        // if (document.body.clientWidth < 1400) {
+                        //     return defaultDom;
+                        // }
+                        // if (_.isMobile) return defaultDom;
                         return (
                             <>
                                 {defaultDom}
                             </>
                         );
                     }}
-                    menuFooterRender={(props) => {
-                        if (props?.collapsed) return undefined;
+                    footerRender={() => {
                         return (
-                            <div
-                                style={{
-                                    textAlign: 'center',
-                                    paddingBlockStart: 12,
-                                }}
-                            >
-                                <div>© 2021 Made with love</div>
-                                <div>by Ant Design</div>
-                            </div>
+                           <GlobalFooter/>
                         );
                     }}
                     onMenuHeaderClick={(e) => console.log(e)}
+                    menuDataRender={() => {
+                        return menus
+                    }}
                     menuItemRender={(item, dom) => (
-                        <div
-                            onClick={() => {
-                                // setPathname(item.path || '/welcome');
-                            }}
+                        <Link
+                            href={item.path || "/"}
+                            target={item.target}
                         >
                             {dom}
-                        </div>
+                        </Link>
                     )}
                 >
                     {children}
