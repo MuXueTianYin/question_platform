@@ -3,12 +3,11 @@ import localFont from "next/font/local";
 import {AntdRegistry} from '@ant-design/nextjs-registry';
 import BasicLayout from "@/layouts/BasicLayout";
 import React, {useCallback, useEffect} from "react";
-import {Provider, useDispatch} from "react-redux";
-import store, {AppDispatch} from "@/stores";
-import "./globals.css";
+import {Provider} from "react-redux";
+import store from "@/stores";
 import {getLoginUserUsingGet} from "@/api/userController";
-import {setLoginUser} from "@/stores/loginUser";
-
+import AccessLayout from "@/access/AccessLayout";
+import "./globals.css";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -33,7 +32,7 @@ const InitLayout: React.FC<Readonly<{
     children: React.ReactNode;
 }>> = ({children}) => {
 
-     const dispatch = useDispatch<AppDispatch>();
+     // const dispatch = useDispatch<AppDispatch>();
 
     /**
      * 全局初始化函数，有单次调用的代码
@@ -44,10 +43,11 @@ const InitLayout: React.FC<Readonly<{
         if (res.data){
         //   更新全局用户状态
         } else {
-            setTimeout(()=>{
-                const test = {userName: "test", id: 1,userAvatar: "/assets/defaultUserAvatar.png"};
-                dispatch(setLoginUser(test));
-            },3000)
+            // 测试代码
+            // setTimeout(()=>{
+            //     const test = {userName: "test", id: 1,userAvatar: "/assets/defaultUserAvatar.png",userRole: ACCESS_ENUM.ADMIN};
+            //     dispatch(setLoginUser(test));
+            // },3000)
         }
     }, [])
 
@@ -70,13 +70,15 @@ export default function RootLayout({
 
 
     return (
-        <html lang="en">
+        <html lang="zh">
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AntdRegistry>
             <Provider store={store}>
                 <InitLayout>
                     <BasicLayout>
-                        {children}
+                        <AccessLayout>
+                            {children}
+                        </AccessLayout>
                     </BasicLayout>
                 </InitLayout>
             </Provider>

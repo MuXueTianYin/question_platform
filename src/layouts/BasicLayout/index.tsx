@@ -12,6 +12,7 @@ import "./index.css"
 import {menus} from "../../../config/menu";
 import {useSelector} from "react-redux";
 import {RootState} from "@/stores";
+import getAccessibleMenus from "@/access/menuAccess";
 
 const SearchInput = () => {
     const {token} = theme.useToken();
@@ -72,7 +73,10 @@ export default function BasicLayout({children}: Props): React.ReactElement {
                     }}
                     token={{
                         header: {
-                            colorBgMenuItemSelected: 'rgba(0,0,0,0.04)',
+                            // colorBgMenuItemSelected: 'rgba(0,0,0,0.04)',
+                            colorBgMenuItemHover: 'rgba(0,0,0,0.0)',
+                            colorTextMenuSecondary: 'rgba(255,255,255,0.65)',
+                            colorTextMenuActive: 'rgba(213,213,213,0.95)',
                         },
                     }}
                     layout={'top'}
@@ -84,6 +88,7 @@ export default function BasicLayout({children}: Props): React.ReactElement {
                     menu={{
                         collapsedShowGroupTitle: true,
                     }}
+                    fixedHeader={true}
                     avatarProps={{
                         src: loginUser.userAvatar,
                         size: 'small',
@@ -108,11 +113,7 @@ export default function BasicLayout({children}: Props): React.ReactElement {
                     }}
                     actionsRender={(props) => {
                         if (props.isMobile) return [];
-                        // if (typeof window === 'undefined') return [];
                         return [
-                            // props.layout !== 'side' && document.body.clientWidth > 1400 ? (
-                            //     <SearchInput/>
-                            // ) : undefined,
                             props.layout !== 'side'  ? (
                                 <SearchInput/>
                             ) : undefined,
@@ -122,31 +123,21 @@ export default function BasicLayout({children}: Props): React.ReactElement {
                         ];
                     }}
                     headerTitleRender={(logo, title) => {
-                        const defaultDom = (
+                        return (
                             <a>
                                 {logo}
                                 {title}
                             </a>
                         );
-                        // if (typeof window === 'undefined') return defaultDom;
-                        // if (document.body.clientWidth < 1400) {
-                        //     return defaultDom;
-                        // }
-                        // if (_.isMobile) return defaultDom;
-                        return (
-                            <>
-                                {defaultDom}
-                            </>
-                        );
                     }}
                     footerRender={() => {
                         return (
-                           <GlobalFooter/>
+                            <GlobalFooter/>
                         );
                     }}
                     onMenuHeaderClick={(e) => console.log(e)}
                     menuDataRender={() => {
-                        return menus
+                        return getAccessibleMenus(loginUser,menus);
                     }}
                     menuItemRender={(item, dom) => (
                         <Link
