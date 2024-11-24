@@ -10,6 +10,8 @@ import Link from "next/link";
 import GlobalFooter from "@/components/GlobalFooter";
 import "./index.css"
 import {menus} from "../../../config/menu";
+import {useSelector} from "react-redux";
+import {RootState} from "@/stores";
 
 const SearchInput = () => {
     const {token} = theme.useToken();
@@ -51,6 +53,9 @@ export default function BasicLayout({children}: Props): React.ReactElement {
 
     const pathname = usePathname()
 
+    const loginUser = useSelector((state: RootState) => state.loginUser);
+
+
     return (
         <div
             id="test-pro-layout"
@@ -80,9 +85,9 @@ export default function BasicLayout({children}: Props): React.ReactElement {
                         collapsedShowGroupTitle: true,
                     }}
                     avatarProps={{
-                        src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+                        src: loginUser.userAvatar,
                         size: 'small',
-                        title: '七妮妮',
+                        title: loginUser.userName,
                         render: (props, dom) => {
                             return (
                                 <Dropdown
@@ -105,7 +110,10 @@ export default function BasicLayout({children}: Props): React.ReactElement {
                         if (props.isMobile) return [];
                         // if (typeof window === 'undefined') return [];
                         return [
-                            props.layout !== 'side' && document.body.clientWidth > 1400 ? (
+                            // props.layout !== 'side' && document.body.clientWidth > 1400 ? (
+                            //     <SearchInput/>
+                            // ) : undefined,
+                            props.layout !== 'side'  ? (
                                 <SearchInput/>
                             ) : undefined,
                             <InfoCircleFilled key="InfoCircleFilled"/>,

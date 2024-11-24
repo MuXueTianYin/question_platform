@@ -1,9 +1,14 @@
 "use client";
 import localFont from "next/font/local";
-import "./globals.css";
 import {AntdRegistry} from '@ant-design/nextjs-registry';
 import BasicLayout from "@/layouts/BasicLayout";
-import {useCallback, useEffect} from "react";
+import React, {useCallback, useEffect} from "react";
+import {Provider, useDispatch} from "react-redux";
+import store, {AppDispatch} from "@/stores";
+import "./globals.css";
+import {getLoginUserUsingGet} from "@/api/userController";
+import {setLoginUser} from "@/stores/loginUser";
+
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -28,17 +33,27 @@ const InitLayout: React.FC<Readonly<{
     children: React.ReactNode;
 }>> = ({children}) => {
 
+     const dispatch = useDispatch<AppDispatch>();
+
     /**
      * 全局初始化函数，有单次调用的代码
      */
     // useCallback 缓存函数  []中的变量不发生改变就不会出现渲染
-    const doInit = useCallback(() => {
-        console.log("init")
+    const doInitLoginUser = useCallback( async() => {
+        const res = await getLoginUserUsingGet()
+        if (res.data){
+        //   更新全局用户状态
+        } else {
+            setTimeout(()=>{
+                const test = {userName: "test", id: 1,userAvatar: "/assets/defaultUserAvatar.png"};
+                dispatch(setLoginUser(test));
+            },3000)
+        }
     }, [])
 
     // 在next.js中开发环境useEffect会执行两次
     useEffect(() => {
-        doInit()
+        doInitLoginUser()
     }, []);
 
     return (
@@ -58,11 +73,13 @@ export default function RootLayout({
         <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AntdRegistry>
-            <InitLayout>
-                <BasicLayout>
-                    {children}
-                </BasicLayout>
-            </InitLayout>
+            <Provider store={store}>
+                <InitLayout>
+                    <BasicLayout>
+                        {children}
+                    </BasicLayout>
+                </InitLayout>
+            </Provider>
         </AntdRegistry>
         </body>
         </html>
