@@ -3,11 +3,12 @@ import localFont from "next/font/local";
 import {AntdRegistry} from '@ant-design/nextjs-registry';
 import BasicLayout from "@/layouts/BasicLayout";
 import React, {useCallback, useEffect} from "react";
-import {Provider} from "react-redux";
-import store from "@/stores";
+import {Provider, useDispatch} from "react-redux";
+import store, {AppDispatch} from "@/stores";
 import {getLoginUserUsingGet} from "@/api/userController";
 import AccessLayout from "@/access/AccessLayout";
 import "./globals.css";
+import {setLoginUser} from "@/stores/loginUser";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -32,7 +33,7 @@ const InitLayout: React.FC<Readonly<{
     children: React.ReactNode;
 }>> = ({children}) => {
 
-     // const dispatch = useDispatch<AppDispatch>();
+     const dispatch = useDispatch<AppDispatch>();
 
     /**
      * 全局初始化函数，有单次调用的代码
@@ -42,6 +43,7 @@ const InitLayout: React.FC<Readonly<{
         const res = await getLoginUserUsingGet()
         if (res.data){
         //   更新全局用户状态
+            dispatch(setLoginUser(res.data));
         } else {
             // 测试代码
             // setTimeout(()=>{

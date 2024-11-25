@@ -1,18 +1,23 @@
 "use client"
 import {GithubFilled, InfoCircleFilled, LogoutOutlined, QuestionCircleFilled, SearchOutlined,} from '@ant-design/icons';
 import {ProConfigProvider, ProLayout,} from '@ant-design/pro-components';
-import {Dropdown, Input, theme,} from 'antd';
+import {Dropdown, Input, message, theme,} from 'antd';
 import React from 'react';
 import {Props} from "next/script";
 import Image from "next/image";
-import {usePathname} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import Link from "next/link";
 import GlobalFooter from "@/components/GlobalFooter";
 import "./index.css"
 import {menus} from "../../../config/menu";
-import {useSelector} from "react-redux";
-import {RootState} from "@/stores";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "@/stores";
 import getAccessibleMenus from "@/access/menuAccess";
+import {userLogoutUsingPost} from "@/api/userController";
+import {setLoginUser} from "@/stores/loginUser";
+import {DEFAULT_USER} from "@/constants/user";
+
+
 
 const SearchInput = () => {
     const {token} = theme.useToken();
@@ -50,11 +55,32 @@ const SearchInput = () => {
     );
 };
 
+
+
+
+
 export default function BasicLayout({children}: Props): React.ReactElement {
 
     const pathname = usePathname()
 
     const loginUser = useSelector((state: RootState) => state.loginUser);
+
+    const dispatch = useDispatch<AppDispatch>();
+
+    const router = useRouter();
+    /**
+     * 注销
+     */
+    const userLogout = async () => {
+        try {
+            await userLogoutUsingPost();
+            // 保存用户登录态
+            dispatch(setLoginUser(DEFAULT_USER));
+            router.push("/");
+        } catch (e: any) {
+            message.error('登录失败，' + e.message);
+        }
+    };
 
 
     return (
@@ -90,24 +116,31 @@ export default function BasicLayout({children}: Props): React.ReactElement {
                     }}
                     fixedHeader={true}
                     avatarProps={{
-                        src: loginUser.userAvatar,
-                        size: 'small',
-                        title: loginUser.userName,
+                        src: loginUser.userAvatar || "/assets/defaultUserAvatar.png",
+                        size: "small",
+                        title: loginUser.userName || "进步猫",
                         render: (props, dom) => {
-                            return (
+                            return loginUser.id ? (
                                 <Dropdown
                                     menu={{
                                         items: [
                                             {
-                                                key: 'logout',
-                                                icon: <LogoutOutlined/>,
-                                                label: '退出登录',
+                                                key: "logout",
+                                                icon: <LogoutOutlined />,
+                                                label: "退出登录",
                                             },
                                         ],
+                                        onClick:( async (event:{ket:React.Key})=>{
+                                            const { key } =event
+                                            if (key === "logout") userLogout()
+                                        })
                                     }}
+
                                 >
                                     {dom}
                                 </Dropdown>
+                            ) : (
+                                <div onClick={() => router.push("/user/login")}>{dom}</div>
                             );
                         },
                     }}
