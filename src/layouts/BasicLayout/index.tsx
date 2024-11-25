@@ -130,7 +130,7 @@ export default function BasicLayout({children}: Props): React.ReactElement {
                                                 label: "退出登录",
                                             },
                                         ],
-                                        onClick:( async (event:{ket:React.Key})=>{
+                                        onClick:( async (event:{key:React.Key})=>{
                                             const { key } =event
                                             if (key === "logout") userLogout()
                                         })
