@@ -4,23 +4,25 @@ import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import {Button, message, Popconfirm, Space, Typography} from 'antd';
 import React, { useRef, useState } from 'react';
-import {deleteUserUsingPost, listUserByPageUsingPost} from "@/api/userController";
-import CreateModal from "@/app/admin/user/components/CreateModal";
-import UpdateModal from "@/app/admin/user/components/UpdateModal";
+import {deleteQuestionUsingPost, listQuestionByPageUsingPost} from "@/api/questionController";
+import CreateModal from "@/app/admin/question/components/CreateModal";
+import UpdateModal from "@/app/admin/question/components/UpdateModal";
+import MdEditor from "@/components/MdEditor";
+import TagList from "@/components/TagList/page";
 
 /**
- * 用户管理页面
+ * 题目管理页面
  *
  * @constructor
  */
-const UserAdminPage: React.FC = () => {
+const QuestionAdminPage: React.FC = () => {
   // 是否显示新建窗口
   const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
   // 是否显示更新窗口
   const [updateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  // 当前用户点击的数据
-  const [currentRow, setCurrentRow] = useState<API.User>();
+  // 当前题目点击的数据
+  const [currentRow, setCurrentRow] = useState<API.Question>();
 
 
   /**
@@ -28,11 +30,11 @@ const UserAdminPage: React.FC = () => {
    *
    * @param row
    */
-  const handleDelete = async (row: API.User) => {
+  const handleDelete = async (row: API.Question) => {
     const hide = message.loading('正在删除');
     if (!row) return true;
     try {
-      await deleteUserUsingPost({
+      await deleteQuestionUsingPost({
         id: row.id as any,
       });
       hide();
@@ -49,7 +51,7 @@ const UserAdminPage: React.FC = () => {
   /**
    * 表格列配置
    */
-  const columns: ProColumns<API.User>[] = [
+  const columns: ProColumns<API.Question>[] = [
     {
       title: 'id',
       dataIndex: 'id',
@@ -57,54 +59,89 @@ const UserAdminPage: React.FC = () => {
       hideInForm: true,
     },
     {
-      title: '账号',
-      dataIndex: 'userAccount',
-      valueType: 'text',
+      title: "标题",
+      dataIndex: "title",
+      valueType: "text",
     },
     {
-      title: '用户名',
-      dataIndex: 'userName',
-      valueType: 'text',
-    },
-    {
-      title: '头像',
-      dataIndex: 'userAvatar',
-      valueType: 'image',
-      fieldProps: {
-        width: 64,
-      },
+      title: "内容",
+      dataIndex: "content",
+      valueType: "text",
       hideInSearch: true,
-    },
-    {
-      title: '简介',
-      dataIndex: 'userProfile',
-      valueType: 'textarea',
-    },
-    {
-      title: '权限',
-      dataIndex: 'userRole',
-      valueEnum: {
-        user: {
-          text: '用户',
-        },
-        admin: {
-          text: '管理员',
-        },
+      width: 240,
+      renderFormItem: (
+          _,
+          { type, defaultRender, formItemProps, fieldProps, ...rest },
+          form,
+      ) => {
+        return (
+            // value 和 onchange 会通过 form 自动注入。
+            <MdEditor
+                // 组件的配置
+                {...fieldProps}
+            />
+        );
       },
     },
     {
-      title: '创建时间',
+      title: "答案",
+      dataIndex: "answer",
+      valueType: "text",
+      hideInSearch: true,
+      width: 640,
+      renderFormItem: (
+          _,
+          { type, defaultRender, formItemProps, fieldProps, ...rest },
+          form,
+      ) => {
+        return (
+            // value 和 onchange 会通过 form 自动注入。
+            <MdEditor
+                // 组件的配置
+                {...fieldProps}
+            />
+        );
+      },
+    },
+    {
+      title: "标签",
+      dataIndex: "tags",
+      valueType: "select",
+      fieldProps: {
+        mode: "tags",
+      },
+      render: (_, record) => {
+        const tagList = JSON.parse(record.tags || "[]");
+        return <TagList tagList={tagList} />;
+      },
+    },
+    {
+      title: "创建用户",
+      dataIndex: "userId",
+      valueType: "text",
+      hideInForm: true,
+    },
+    {
+      title: "创建时间",
       sorter: true,
-      dataIndex: 'createTime',
-      valueType: 'dateTime',
+      dataIndex: "createTime",
+      valueType: "dateTime",
       hideInSearch: true,
       hideInForm: true,
     },
     {
-      title: '更新时间',
+      title: "编辑时间",
       sorter: true,
-      dataIndex: 'updateTime',
-      valueType: 'dateTime',
+      dataIndex: "editTime",
+      valueType: "dateTime",
+      hideInSearch: true,
+      hideInForm: true,
+    },
+    {
+      title: "更新时间",
+      sorter: true,
+      dataIndex: "updateTime",
+      valueType: "dateTime",
       hideInSearch: true,
       hideInForm: true,
     },
@@ -123,8 +160,8 @@ const UserAdminPage: React.FC = () => {
             修改
           </Typography.Link>
           <Popconfirm
-              title="删除用户"
-              description={"确定删除"+record.userAccount+"用户吗？"}
+              title="删除题目"
+              description={"确定删除"+record.title+"题目吗？"}
               onConfirm={() => handleDelete(record)}
               onCancel={() => {
                 message.error('取消删除');
@@ -142,7 +179,7 @@ const UserAdminPage: React.FC = () => {
   ];
   return (
     <PageContainer>
-      <ProTable<API.User>
+      <ProTable<API.Question>
         headerTitle={'查询表格'}
         actionRef={actionRef}
         rowKey="key"
@@ -164,12 +201,12 @@ const UserAdminPage: React.FC = () => {
           const sortField = Object.keys(sort)?.[0];
           const sortOrder = sort?.[sortField] ?? undefined;
 
-          const { data, code } = await listUserByPageUsingPost({
+          const { data, code } = await listQuestionByPageUsingPost({
             ...params,
             sortField,
             sortOrder,
             ...filter,
-          } as API.UserQueryRequest);
+          } as API.QuestionQueryRequest);
 
           return {
             success: code === 0,
@@ -206,4 +243,4 @@ const UserAdminPage: React.FC = () => {
     </PageContainer>
   );
 };
-export default UserAdminPage;
+export default QuestionAdminPage;
