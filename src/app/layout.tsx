@@ -41,9 +41,9 @@ const InitLayout: React.FC<Readonly<{
     // useCallback 缓存函数  []中的变量不发生改变就不会出现渲染
     const doInitLoginUser = useCallback( async() => {
         const res = await getLoginUserUsingGet()
-        if (res.data){
+        if (res.data ){
         //   更新全局用户状态
-            dispatch(setLoginUser(res.data));
+            dispatch(setLoginUser(res.data as API.LoginUserVO));
         } else {
             // 测试代码
             // setTimeout(()=>{

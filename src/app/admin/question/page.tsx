@@ -112,7 +112,10 @@ const QuestionAdminPage: React.FC = () => {
       },
       render: (_, record) => {
         const tagList = JSON.parse(record.tags || "[]");
-        return <TagList tagList={tagList} />;
+        if (Array.isArray(tagList)) {
+          return <TagList tagList={tagList} />;
+        }
+        return <div>{tagList}</div>;
       },
     },
     {

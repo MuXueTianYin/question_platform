@@ -12,7 +12,6 @@ interface Props {
  */
 const TagList = (props: Props) => {
   const { tagList = [] } = props;
-
   return (
       <div className="tag-list">
         {tagList.map((tag) => {

@@ -28,12 +28,12 @@ const UserLoginPage: React.FC = (props) => {
      */
     const doSubmit = async (values: any) => {
         try {
-            console.log(values)
-            const res = await userLoginUsingPost(values);
+            const res    = await userLoginUsingPost(values);
             if (res.data) {
+                const loginUserData = res.data as API.LoginUserVO;
                 message.success("登录成功！");
                 // 保存用户登录态
-                dispatch(setLoginUser(res.data));
+                dispatch(setLoginUser(loginUserData));
                 router.replace("/");
                 form.resetFields();
             }

@@ -31,7 +31,8 @@ const UserRegisterPage: React.FC = (props) => {
                 router.push("/user/login");
             }
         } catch (e) {
-            message.error("注册失败，" + e.message);
+            // @ts-ignore
+            message.error("注册失败，" +  e.message);
         }
     };
 
