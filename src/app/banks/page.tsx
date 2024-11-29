@@ -1,24 +1,37 @@
-"use client"
+"use server";
 import styles from "./page.module.css";
-import MdEditor from "@/components/MdEditor";
-import MdViewer from "@/components/MdViewer";
-import {useState} from "react";
+import Title from "antd/es/typography/Title";
+import {listQuestionBankVoByPageUsingPost} from "@/api/questionBankController";
+import QuestionBankList from "@/components/QuestionBankList/page";
+import {Flex} from "antd";
 
 
+export default async function banksPage() {
+
+    let questionBankList = [];
+    // 题库数量不多可以全量获取
+    const pageSize = 200;
+    try {
+        const questionBankRes = await listQuestionBankVoByPageUsingPost({
+            pageSize,
+            sortField: 'createTime',
+            sortOrder: 'descend',
+        });
+        questionBankList = questionBankRes.data.records ?? [];
+    } catch (e) {
+        // @ts-ignore
+        console.error('获取题库列表失败，' + e.message);
+    }
 
 
-
-
-
-
-export default function Banks() {
-
-    const [text, setText] = useState<string>('');
-
-    return (
-        <div className={styles.page}>
-            <MdEditor value={text} onChange={setText} />
-            <MdViewer value={text} />
-        </div>
-    );
+  return (
+      <div className={styles.page}>
+          <Flex justify="space-between" align="middle">
+              <Title level={3}>
+                  题库大全
+              </Title>
+          </Flex>
+          <QuestionBankList  questionBankList={questionBankList}/>
+      </div>
+  );
 }

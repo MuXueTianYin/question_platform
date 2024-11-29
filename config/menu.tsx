@@ -14,7 +14,7 @@ export const menus = [
     },
     {
         path: 'banks',
-        name: '题库（markdown）'
+        name: '题库'
     },
     {
         name: "暮雪天音",

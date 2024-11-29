@@ -1,3 +1,4 @@
-.ant-pro-layout .ant-pro-layout-content {
+/*解决底部显示内容不完整*/
+.my-prefix-layout .my-prefix-layout-content {
     padding-bottom: 96px !important;
 }

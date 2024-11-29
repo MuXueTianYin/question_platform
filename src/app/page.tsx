@@ -4,6 +4,9 @@ import Title from "antd/es/typography/Title";
 import {listQuestionBankVoByPageUsingPost} from "@/api/questionBankController";
 import {listQuestionVoByPageUsingPost} from "@/api/questionController";
 import QuestionBankList from "@/components/QuestionBankList/page";
+import QuestionList from "@/components/QuestionList/page";
+import {Flex} from "antd";
+import Link from "next/link";
 
 
 export default async function Home() {
@@ -37,19 +40,20 @@ export default async function Home() {
 
   return (
       <div className={styles.page}>
-          <Title level={3}>
-              最新题库
-          </Title>
-          <div>
-              <QuestionBankList  questionBankList={[]}/>
-              {JSON.stringify(questionBankList)}
-          </div>
-          <Title level={3}>
-              最新题目
-          </Title>
-          <div>
-              {JSON.stringify(questionList)}
-          </div>
+          <Flex justify="space-between" align="middle">
+              <Title level={3}>
+                  最新题库
+              </Title>
+              <Link href={"/banks"}>查看更多</Link>
+          </Flex>
+          <QuestionBankList  questionBankList={questionBankList}/>
+          <Flex justify="space-between" align="middle">
+              <Title level={3}>
+                  最新题目
+              </Title>
+              <Link href={"/questions"}>查看更多</Link>
+          </Flex>
+          <QuestionList questionList={questionList}></QuestionList>
       </div>
   );
 }
