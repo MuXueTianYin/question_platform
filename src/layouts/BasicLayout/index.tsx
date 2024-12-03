@@ -44,10 +44,11 @@ export default function BasicLayout({children}: Props): React.ReactElement {
 
     return (
         <div
-            id="test-pro-layout"
+            id="layout-page"
             style={{
                 height: '100vh',
                 overflow: 'auto',
+
             }}
         >
             <ProConfigProvider hashed={false}>
