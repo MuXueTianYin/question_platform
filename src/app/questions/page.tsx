@@ -6,14 +6,17 @@ import {listQuestionVoByPageUsingPost} from "@/api/questionController";
 import QuestionsTable from "@/components/questionsTable";
 
 
-export default async function banksPage() {
+export default async function QuestionsPage({searchParams}) {
 
   let questionList = [];
 
   let total = 0;
 
+  const { q: searchText } = searchParams;
+
   try {
     const questionListRes = await listQuestionVoByPageUsingPost({
+      title: searchText,
       pageSize: 12,
       sortField: 'createTime',
       sortOrder: 'descend',
@@ -33,7 +36,9 @@ export default async function banksPage() {
             题库大全
           </Title>
         </Flex>
-        <QuestionsTable  defaultQuestionList={questionList} defaultTotal={total}/>
+        <QuestionsTable  defaultQuestionList={questionList} defaultTotal={total} defaultSearchParams={
+          {title: searchText}
+        }  />
       </div>
   );
 }

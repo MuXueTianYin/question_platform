@@ -2,7 +2,7 @@
 import styles from "./page.module.css";
 import Title from "antd/es/typography/Title";
 import {listQuestionBankVoByPageUsingPost} from "@/api/questionBankController";
-import QuestionBankList from "@/components/QuestionBankList/page";
+import QuestionBankList from "@/components/QuestionBankList";
 import {Flex} from "antd";
 
 

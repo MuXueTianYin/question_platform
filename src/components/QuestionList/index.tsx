@@ -2,7 +2,7 @@
 import List from "antd/lib/list";
 import styles from "./page.module.css";
 import {Card} from "antd";
-import TagList from "@/components/TagList/page";
+import TagList from "@/components/TagList";
 import Link from "next/link";
 
 interface Props {

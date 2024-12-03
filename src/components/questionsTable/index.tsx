@@ -2,14 +2,15 @@
 import type {ActionType, ProColumns} from '@ant-design/pro-components';
 import {ProTable} from '@ant-design/pro-components';
 import React, {useRef, useState} from 'react';
-import {listQuestionByPageUsingPost, listQuestionVoByPageUsingPost} from "@/api/questionController";
-import TagList from "@/components/TagList/page";
+import {listQuestionVoByPageUsingPost} from "@/api/questionController";
+import TagList from "@/components/TagList";
 import "./index.css"
 
 
 interface Props {
   defaultQuestionList: API.QuestionVO[];
-  defaultTotal:number
+  defaultTotal:number;
+  defaultSearchParams:API.QuestionBankQueryRequest
 }
 
 
@@ -18,13 +19,15 @@ interface Props {
  *
  * @constructor
  */
-const QuestionAdminPage = (props:Props) => {
+const QuestionTable = (props:Props) => {
   const actionRef = useRef<ActionType>();
 
-  const {defaultQuestionList,defaultTotal = []} = props;
+  const {defaultQuestionList,defaultTotal = [],defaultSearchParams={}} = props;
 
   const [questionList, setQuestionList] = useState<API.QuestionVO[]>(defaultQuestionList);
   const [total, setTotal] = useState<number>(defaultTotal);
+  const [init, setInit] = useState<boolean>(true);
+
 
   /**
    * 表格列配置
@@ -69,11 +72,23 @@ const QuestionAdminPage = (props:Props) => {
               total,
             }
           }
+          form={
+            {
+              initialValues:defaultSearchParams
+            }
+          }
           dataSource={questionList}
           request={async (params, sort, filter) => {
+            // 首次请求
+            if (init) {
+              setInit(false);
+              // 如果已有外层传来的默认数据，无需再次查询
+              if (defaultQuestionList && defaultTotal) {
+                return;
+              }
+            }
             const sortField = Object.keys(sort)?.[0] || 'createTime';
             const sortOrder = sort?.[sortField] || 'descend';
-
             const { data, code } = await listQuestionVoByPageUsingPost({
               ...params,
               sortField,
@@ -95,4 +110,4 @@ const QuestionAdminPage = (props:Props) => {
     </div>
   );
 };
-export default QuestionAdminPage;
+export default QuestionTable;

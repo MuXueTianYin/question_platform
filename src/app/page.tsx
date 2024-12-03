@@ -3,8 +3,8 @@ import styles from "./page.module.css";
 import Title from "antd/es/typography/Title";
 import {listQuestionBankVoByPageUsingPost} from "@/api/questionBankController";
 import {listQuestionVoByPageUsingPost} from "@/api/questionController";
-import QuestionBankList from "@/components/QuestionBankList/page";
-import QuestionList from "@/components/QuestionList/page";
+import QuestionBankList from "@/components/QuestionBankList";
+import QuestionList from "@/components/QuestionList";
 import {Flex} from "antd";
 import Link from "next/link";
 
