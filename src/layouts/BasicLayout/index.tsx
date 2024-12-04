@@ -1,7 +1,7 @@
 "use client"
-import {GithubFilled, InfoCircleFilled, LogoutOutlined, QuestionCircleFilled, SearchOutlined,} from '@ant-design/icons';
+import {GithubFilled, InfoCircleFilled, LogoutOutlined, QuestionCircleFilled,} from '@ant-design/icons';
 import {ProConfigProvider, ProLayout,} from '@ant-design/pro-components';
-import {Dropdown, Input, message, theme,} from 'antd';
+import {Dropdown, message,} from 'antd';
 import React from 'react';
 import {Props} from "next/script";
 import Image from "next/image";
@@ -21,6 +21,7 @@ import SearchInput from "@/layouts/BasicLayout/components/SearchInput";
 export default function BasicLayout({children}: Props): React.ReactElement {
 
     const pathname = usePathname()
+
 
     const loginUser = useSelector((state: RootState) => state.loginUser);
 
@@ -107,7 +108,7 @@ export default function BasicLayout({children}: Props): React.ReactElement {
                     actionsRender={(props) => {
                         if (props.isMobile) return [];
                         return [
-                            props.layout !== 'side'  ? (
+                            props.layout !== 'side' &&  pathname !== '/questions' ? (
                                 <SearchInput/>
                             ) : undefined,
                             <InfoCircleFilled key="InfoCircleFilled"/>,

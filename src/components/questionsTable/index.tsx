@@ -5,6 +5,8 @@ import React, {useRef, useState} from 'react';
 import {listQuestionVoByPageUsingPost} from "@/api/questionController";
 import TagList from "@/components/TagList";
 import "./index.css"
+import {useRouter} from "next/navigation";
+import Link from "next/link";
 
 
 interface Props {
@@ -27,7 +29,7 @@ const QuestionTable = (props:Props) => {
   const [questionList, setQuestionList] = useState<API.QuestionVO[]>(defaultQuestionList);
   const [total, setTotal] = useState<number>(defaultTotal);
   const [init, setInit] = useState<boolean>(true);
-
+  const router = useRouter();
 
   /**
    * 表格列配置
@@ -37,24 +39,25 @@ const QuestionTable = (props:Props) => {
       title: "标题",
       dataIndex: "title",
       valueType: "text",
+      render: (_, record) => {
+        return <Link href={`/question/${record.id}`}>{record.title}</Link>;
+      },
     },
     {
       title: "标签",
-      dataIndex: "tags",
+      dataIndex: "tagList",
       valueType: "select",
       fieldProps: {
         mode: "tags",
       },
       render: (_, record) => {
-        const tagList = JSON.parse(record.tags || "[]");
+        const tagList = record.tagList
         if (Array.isArray(tagList)) {
           return <TagList tagList={tagList} />;
         }
         return <div>{tagList}</div>;
       },
     },
-
-
   ];
   return (
     <div className={"question-table"}>
@@ -78,6 +81,13 @@ const QuestionTable = (props:Props) => {
             }
           }
           dataSource={questionList}
+          onReset= {()=>{
+            if (defaultSearchParams) {
+              defaultSearchParams.title = ''
+              router.replace('/questions');
+            }
+          }
+          }
           request={async (params, sort, filter) => {
             // 首次请求
             if (init) {
