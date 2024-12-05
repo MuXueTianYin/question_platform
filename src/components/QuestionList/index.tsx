@@ -7,6 +7,8 @@ import Link from "next/link";
 
 interface Props {
     questionList: API.QuestionVO[];
+    cardTitle?:string;
+    questionBankId:string
 }
 
 /**
@@ -16,18 +18,18 @@ interface Props {
  */
 export default function QuestionList(props: Props): JSX.Element {
 
-    const {questionList = []} = props;
+    const {questionList = [],cardTitle,questionBankId} = props;
 
     return (
         <div className={styles.page}>
             {
-                <Card >
+                <Card title={cardTitle}>
                     <List
                         dataSource={questionList}
                         renderItem={(item,index) => (
                             <List.Item extra={<TagList tagList={item.tagList}/> }>
                                 <List.Item.Meta title={
-                                    <Link href={`/questions/${item.id}`} >
+                                    <Link href={questionBankId? `/bank/${questionBankId}/question/${item.id}` :`/question/${item.id}`} >
                                         {item.title}
                                     </Link>
                                 }>
