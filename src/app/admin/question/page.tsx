@@ -8,7 +8,8 @@ import {deleteQuestionUsingPost, listQuestionByPageUsingPost} from "@/api/questi
 import CreateModal from "@/app/admin/question/components/CreateModal";
 import UpdateModal from "@/app/admin/question/components/UpdateModal";
 import MdEditor from "@/components/MdEditor";
-import TagList from "@/components/TagList/page";
+import TagList from "@/components/TagList";
+import UpdateBankModal from "@/app/admin/question/components/UpdateBankModal";
 
 /**
  * 题目管理页面
@@ -23,6 +24,10 @@ const QuestionAdminPage: React.FC = () => {
   const actionRef = useRef<ActionType>();
   // 当前题目点击的数据
   const [currentRow, setCurrentRow] = useState<API.Question>();
+
+  // 是否显示更新所属题库的弹窗
+  const [updateBankModalVisible, setUpdateBankModalVisible] = useState<boolean>(false);
+
 
 
   /**
@@ -162,6 +167,14 @@ const QuestionAdminPage: React.FC = () => {
           >
             修改
           </Typography.Link>
+          <Typography.Link
+              onClick={() => {
+                setCurrentRow(record);
+                setUpdateBankModalVisible(true);
+              }}
+          >
+            修改所属题库
+          </Typography.Link>
           <Popconfirm
               title="删除题目"
               description={"确定删除"+record.title+"题目吗？"}
@@ -188,6 +201,10 @@ const QuestionAdminPage: React.FC = () => {
         rowKey="key"
         search={{
           labelWidth: 120,
+        }}
+        scroll={{
+          x:true,
+          y:1200
         }}
         toolBarRender={() => [
           <Button
@@ -242,6 +259,14 @@ const QuestionAdminPage: React.FC = () => {
         onCancel={() => {
           setUpdateModalVisible(false);
         }}
+      />
+      <UpdateBankModal
+          visible={updateBankModalVisible}
+          questionId={currentRow?.id}
+          onCancel={() => {
+            setCurrentRow(undefined);
+            setUpdateBankModalVisible(false);
+          }}
       />
     </PageContainer>
   );
