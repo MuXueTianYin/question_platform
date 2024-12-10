@@ -25,7 +25,7 @@ export default async function banksPage() {
 
 
   return (
-      <div className={styles.page}>
+      <div className={styles.page+' max-width-content'}>
           <Flex justify="space-between" align="middle">
               <Title level={3}>
                   题库大全

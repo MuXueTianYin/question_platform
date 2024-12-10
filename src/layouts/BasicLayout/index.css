@@ -7,3 +7,10 @@
 .my-prefix-layout .my-prefix-layout-content {
     padding-bottom: 96px !important;
 }
+
+#layout-page{
+    min-width: 100vh;
+    overflow: auto;
+
+}
+

@@ -1,5 +1,5 @@
 "use client"
-import {GithubFilled, InfoCircleFilled, LogoutOutlined, QuestionCircleFilled,} from '@ant-design/icons';
+import {GithubFilled, InfoCircleFilled, LogoutOutlined, QuestionCircleFilled, UserOutlined,} from '@ant-design/icons';
 import {ProConfigProvider, ProLayout,} from '@ant-design/pro-components';
 import {Dropdown, message,} from 'antd';
 import React from 'react';
@@ -46,11 +46,6 @@ export default function BasicLayout({children}: Props): React.ReactElement {
     return (
         <div
             id="layout-page"
-            style={{
-                height: '100vh',
-                overflow: 'auto',
-
-            }}
         >
             <ProConfigProvider hashed={false}>
                 <ProLayout
@@ -86,6 +81,11 @@ export default function BasicLayout({children}: Props): React.ReactElement {
                                     menu={{
                                         items: [
                                             {
+                                                key: "userCenter",
+                                                icon: <UserOutlined />,
+                                                label: "个人中心",
+                                            },
+                                            {
                                                 key: "logout",
                                                 icon: <LogoutOutlined />,
                                                 label: "退出登录",
@@ -93,7 +93,11 @@ export default function BasicLayout({children}: Props): React.ReactElement {
                                         ],
                                         onClick:( async (event:{key:React.Key})=>{
                                             const { key } =event
-                                            if (key === "logout") userLogout()
+                                            if (key === "logout") {
+                                                userLogout();
+                                            } else if (key === "userCenter") {
+                                                router.push("/user/center");
+                                            }
                                         })
                                     }}
 
